@@ -1,0 +1,133 @@
+{% extends "blog_app/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<style>
+
+</style>
+<div class="container">
+    <div class="chat-container">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <h2>Chat with {% if other_participant.profile_image %} <img src="{{ other_participant.profile_image.url }}"
+                    alt="{{ other_participant.username }}'s profile picture" class="profile-img"> {% else %}
+                <img src="{% static 'blog_app/images/avatar.png' %}" alt="default avatar" class="profile-img">
+                {% endif %}
+                {{ other_participant.username }}
+            </h2>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages">
+            {% for message in chat_messages %}
+            <div class="message {% if message.sender == user %}sent{% else %}received{% endif %}">
+                <span class="message-text">
+                    {{ message.content }}
+                </span>
+                <small class="message-time">{{ message.created_at|date:"h:i A" }}</small>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Message Input -->
+        <form id="message-form" method="post">
+            {% csrf_token %}
+            <div class="input-container">
+                <textarea name="content" rows="1" placeholder="Type your message here..." required></textarea>
+                <button type="submit" class="send-btn">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    const form = document.getElementById('message-form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();  // Prevent form submission
+
+        const formData = new FormData(form);
+
+        // Send the message via AJAX
+        const response = await fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        });
+
+        if (response.ok) {
+            const messageInput = form.querySelector('textarea[name="content"]');
+            const content = messageInput.value;
+
+            // Append the new message directly to the chat room
+            const chatBox = document.getElementById('chat-messages');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', 'sent'); // 'sent' for current user
+            messageElement.innerHTML = `
+            <span class="message-text">${content}</span>
+            <small class="message-time">Just now</small>
+        `;
+            chatBox.appendChild(messageElement);
+
+            // Clear the input after sending
+            messageInput.value = '';
+
+            // Scroll to the latest message
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } else {
+            alert('Failed to send message.');
+        }
+    });
+
+    const roomId = {{ chat_room.id }};
+    let lastCheck = new Date().toISOString(); // Initialize with the current time
+
+    // Polling for new messages
+    function fetchNewMessages() {
+        fetch(`/chat/fetch_new_messages/${roomId}/?last_check=${JSON.stringify(lastCheck)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.new_messages) {
+                    const chatBox = document.getElementById('chat-messages');
+                    const isAtBottom = chatBox.scrollHeight - chatBox.scrollTop <= chatBox.clientHeight + 50;
+
+                    data.new_messages.forEach(message => {
+                        const messageElement = document.createElement('div');
+
+                        // Apply the correct class based on the sender
+                        const messageClass = message.sender === "{{ user }}" ? 'sent' : 'received';
+                        messageElement.classList.add('message', messageClass);
+
+                        // Set the message content
+                        messageElement.innerHTML = `
+                            <span class="message-text">${message.content}</span>
+                            <small class="message-time">${message.created_at}</small>
+                        `;
+
+                        // Append the message to the chat box
+                        chatBox.appendChild(messageElement);
+                    });
+
+                    // Scroll to the latest message only if the user is near the bottom
+                    if (isAtBottom) {
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                }
+                // Update the last check time
+                lastCheck = new Date().toISOString();
+            })
+            .catch(error => console.error('Error fetching messages:', error));
+    }
+
+
+    // Poll every 5 seconds
+    setInterval(fetchNewMessages, 5000);
+
+
+</script>
+
+{% endblock %}

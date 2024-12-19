@@ -1,0 +1,128 @@
+{% extends "blog_app/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class="post-form-wrapper">
+    <div class="animated-bg">
+        <div class="animated-circle circle1"></div>
+        <div class="animated-circle circle2"></div>
+    </div>
+    <div class="gradient-line"></div>
+
+    <div class="form-header">Update Post</div>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="post_id" value="{{ post.id }}">
+
+        <div class="form-row row">
+            <div class="form-label col-12 col-md-3">
+                <label for="title">Title</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <input type="text" class="form-control" name="title" id="title" value="{{ post.title }}" required placeholder="Enter post title">
+            </div>
+        </div>
+
+        <div class="form-row row">
+            <div class="form-label col-12 col-md-3">
+                <label for="content">Content</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <textarea class="form-control" name="content" id="content" required placeholder="Write your post content here">{{ post.content }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-row row">
+            <div class="form-label col-12 col-md-3">
+                <label for="category">Category</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <select class="form-control" name="category" required>
+                    <option value="">Select Category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == post.category.id %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row row">
+            <div class="form-label col-12 col-md-3">
+                <label>Media Type</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="media_type" value="image" id="image" {% if post.media_type == 'image' %}checked{% endif %}>
+                        Image
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="media_type" value="video" id="video" {% if post.media_type == 'video' %}checked{% endif %}>
+                        Video
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row row" id="image_input" style="display: {% if post.media_type == 'image' %}block{% else %}none{% endif %};">
+            <div class="form-label col-12 col-md-3">
+                <label for="image">Upload Image</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <input type="file" class="form-control" name="image" accept="image/*">
+                {% if post.media_type == 'image' and post.media_file %}
+                <img src="{{ post.media_file.url }}" alt="Post Image" class="media-thumbnail" />
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-row row" id="video_input" style="display: {% if post.media_type == 'video' %}block{% else %}none{% endif %};">
+            <div class="form-label col-12 col-md-3">
+                <label for="video">Upload Video</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <input type="file" class="form-control" name="video" accept="video/*">
+                {% if post.media_type == 'video' and post.media_file %}
+                <video controls class="media-thumbnail">
+                    <source src="{{ post.media_file.url }}" type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="submit-row row">
+            <div class="col-12 col-md-9 offset-md-3">
+                <button type="submit" class="btn btn-primary">Update Post</button>
+            </div>
+        </div>
+    </form>
+    <div class="gradient-line2"></div>
+</div>
+
+<script>
+    // Script to handle radio button display for media type selection
+    const imageInput = document.getElementById('image_input');
+    const videoInput = document.getElementById('video_input');
+    const imageRadio = document.getElementById('image');
+    const videoRadio = document.getElementById('video');
+
+    imageRadio.addEventListener('change', function() {
+        if (this.checked) {
+            imageInput.style.display = 'block';
+            videoInput.style.display = 'none';
+        }
+    });
+
+    videoRadio.addEventListener('change', function() {
+        if (this.checked) {
+            videoInput.style.display = 'block';
+            imageInput.style.display = 'none';
+        }
+    });
+</script>
+
+{% endblock %}
+
+

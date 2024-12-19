@@ -1,0 +1,605 @@
+{% extends "blog_app/layout.html" %}
+{% load static %}
+
+{% block body %}
+<!-- Add the Emoji Button Library at the top -->
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.1.1/dist/index.min.js"></script>
+
+
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Welcome to <span class="highlight">DUNIS Tech Academy <sup>{{ user.username}}!</sup></span></h1>
+        <p>Learn, Share, and Connect: <span id="animated-category">Backend Development</span></p>
+        <a href="{% url 'create_post' %}" class="btn-primary">Create Post </a>
+    </div>
+    <div class="moving-circle"></div>
+</section>
+
+
+
+
+<div class="container">
+    <div class="row">
+        <!-- Left Aside Content -->
+        <!-- Left Sidebar -->
+        <div class="col-md-3">
+            <aside class="aside-left">
+                <!-- Newsletter -->
+                <form id="newsletter-signup">
+
+                    <a class="navbar-brand" href="{% url 'index' %}">
+                        <img src="{% static 'blog_app/images/logo.png' %}" alt="logo">
+                        &nbsp; Dunis Tech
+                    </a>
+                    <h4>Subscribe to Our Newsletter</h4>
+                    <input type="email" placeholder="Your Email" required />
+                    <button type="submit">Subscribe</button>
+                </form>
+
+                <!-- Categories -->
+                <h3>Categories</h3>
+                <ul id="categories-list">
+                    <li class="category-item">
+                        <span>Technology</span>
+                        <ul class="subcategories">
+                            <li>AI</li>
+                            <li>Web Development</li>
+                            <li>Mobile Apps</li>
+                        </ul>
+                    </li>
+                    <li class="category-item">Health</li>
+                    <li class="category-item">Lifestyle</li>
+                </ul>
+
+                <!-- Trending Topics -->
+                <h3>Trending Topics</h3>
+                <ul id="trending-list">
+                    <li><span class="badge">#AI</span></li>
+                    <li><span class="badge">#Startups</span></li>
+                    <li><span class="badge">#Travel</span></li>
+                </ul>
+
+                <!-- Recent Comments -->
+                <h3>Recent Comments</h3>
+                <ul>
+                    <li>"Great insights on AI!" - John</li>
+                    <li>"Loved the travel tips!" - Jane</li>
+                </ul>
+
+                <!-- Archives -->
+                <h3>Archives</h3>
+                <ul id="archives-list">
+                    <li>November 2024</li>
+                    <li>October 2024</li>
+                    <li>September 2024</li>
+                </ul>
+            </aside>
+        </div>
+
+
+
+        <div class="col-md-9">
+
+            <main class="main-content">
+                <h1 class="blog-head">
+                    <span id="first-letter">B</span><span id="remaining-text">log Posts</span>
+                </h1>
+
+
+                {% for post in posts %}
+                <div class="post">
+                    <div class="post-container">
+                        <!-- Post Header -->
+                        <div class="post-header">
+                            {% if post.author.profile_image %}
+                            <a href="{% url 'profile_update' post.author.id %}" class="profile-link">
+                                <img src="{{ post.author.profile_image.url }}" alt="Profile Image"
+                                    class="profile-image">
+                                <span class="author-name">{{ post.author.username }}</span>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'profile_update' post.author.id %}" class="profile-link">
+                                <img src="{ static 'default-profile.png' }" alt="Default Profile" class="profile-image">
+                                <span class="author-name">{{ post.author.username }}</span>
+                            </a>
+                            {% endif %}
+                            <span class="post-time">{{ post.created_at }}</span>
+                        </div>
+
+                        <!-- Post Body -->
+                        <div class="post-body">
+                            <div>
+                                <div>
+                                    <h2 class="post-title">{{ post.title }}</h2>
+                                    <p class="post-category">Category: <span>{{ post.category.name }}</span></p>
+                                    <p class="post-content">{{ post.content }}</p>
+
+                                </div>
+
+
+                                {% if post.media_file %}
+                                <div class="post-media">
+                                    {% if post.media_type == 'image' %}
+                                    <img src="{{ post.media_file.url }}" alt="Post Image" class="media-thumbnail" />
+                                    {% elif post.media_type == 'video' %}
+                                    <video controls class="media-thumbnail">
+                                        <source src="{{ post.media_file.url }}" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                        <!-- Modal Structure -->
+                        <div id="media-modal" class="media-modal">
+                            <span class="close-modal">&times;</span>
+                            <div class="modal-content">
+                                <img id="modal-image" alt="Full Image" />
+                                <video id="modal-video" controls>
+                                    <source id="modal-video-source" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+
+                        <!-- Post Footer -->
+                        <div class="post-footer">
+                            <div class="interaction-icons">
+                                <!-- Like Icon -->
+                                {% if user.is_authenticated %}
+                                <button id="likeButton-{{ post.id }}" class="like-button"
+                                    onclick="toggleLike({{ post.id }})">
+                                    <i id="likeIcon-{{ post.id }}" class="fa-solid fa-thumbs-up"
+                                        style="{% if post.has_liked %}color: #168323;{% endif %}"></i>
+                                    <span id="totalLikes-{{ post.id }}" class="total-likes">
+                                        {{ post.total_likes }}</span>
+                                </button>
+
+                                {% else %}
+                                <i id="likeIcon-{{ post.id }}" class="fa-solid fa-thumbs-up"
+                                    style="{% if post.has_liked %}color: #168323;{% endif %}"></i>
+                                <span id="totalLikes-{{ post.id }}" class="total-likes">
+                                    {{ post.total_likes }}</span>{% endif %}
+                                <!-- Comment Icon -->
+                                <button class="comment-button" onclick="scrollToCommentInput({{ post.id }})">
+                                    <i class="fa-solid fa-comment-dots"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <!-- <h4 style="font-size: 13px; font-weight: bold;">Comments:</h4> -->
+                        <div class="comments-container" id="commentsContainer-{{ post.id }}">
+                            {% for comment in post.comments.all %}
+                            <div id="comment-{{ comment.id }}" class="comment">
+                                <p><strong>{{ comment.user.username }}:</strong><br>
+                                    <span id="commentText-{{ comment.id }}">{{ comment.comment_text }}</span>
+                                </p>
+
+                                {% if user.is_authenticated and user == comment.user %}
+                                <!-- Delete and Edit options for comment owner only -->
+                                <a href="#" onclick="deleteComment({{ comment.id }}); return false;">
+                                    <i class="fas fa-trash-alt"></i> <!-- Trash Icon for Delete -->
+                                </a> |
+                                <a href="#" onclick="showEditForm({{ comment.id }}); return false;">
+                                    <i class="fas fa-edit"></i> <!-- Edit Icon -->
+                                </a>
+
+                                <!-- Hidden Edit Form -->
+                                <form id="editForm-{{ comment.id }}" method="POST"
+                                    action="{% url 'edit_comment' comment.id %}" style="display: none;">
+                                    {% csrf_token %}
+                                    <div class="comment-input-container">
+                                        <textarea name="comment_text"
+                                            id="editText-{{ comment.id }}">{{ comment.comment_text }}</textarea>
+                                        <button type="button" class="emoji-button"
+                                            id="editEmojiButton-{{ comment.id }}">
+                                            <i class="fas fa-smile"></i> <!-- Emoji Icon -->
+                                        </button>
+                                    </div>
+                                    <button type="button" onclick="submitEdit({{ comment.id }});">
+                                        <i class="fas fa-save"></i> <!-- Save Icon -->
+                                    </button>
+                                    <button type="button"
+                                        onclick="document.getElementById('editForm-{{ comment.id }}').style.display='none';">
+                                        <i class="fas fa-times"></i> <!-- Cancel Icon -->
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                            {% empty %}
+                            <p>No comments yet.</p>
+                            {% endfor %}
+                        </div>
+
+
+                        <!-- Comment Form -->
+                        <!-- Comment Form -->
+                        {% if user.is_authenticated %}
+                        <form id="commentForm-{{ post.id }}" method="POST" action="{% url 'add_comment' post.id %}"
+                            class="comment-form">
+                            {% csrf_token %}
+                            <div class="comment-input-container">
+                                <!-- Textarea for comment -->
+                                <!-- Textarea with send button inside -->
+                                <div class="textarea-container">
+                                    <textarea
+                                        style=" resize: none !important; width: 100%; height: 40px; padding: 10px; border: 1px solid #ccc; border-radius: 20px; font-size: 14px; line-height: 20px; outline: none; transition: border-color 0.3s ease;"
+                                        name="comment_text" id="commentText-{{ post.id }}"
+                                        placeholder="Write your comment..." rows="2" cols="40"
+                                        oninput="toggleSendButton({{ post.id }})"></textarea>
+                                    <button type="submit" id="sendButton-{{ post.id }}" class="send-button" disabled> <i
+                                            class="fa-solid fa-paper-plane"></i> <!-- Send icon inside button -->
+                                    </button>
+                                </div>
+
+                                <!-- Emoji Button (inside the input container) -->
+                                <!-- <button type="button" class="emoji-button" id="emojiButton-{{ post.id }}"
+                    onclick="toggleEmojiPicker({{ post.id }})">😊</button> -->
+
+                                <!-- Emoji Picker (hidden by default) -->
+                                <div class="emoji-pick" id="emojiPicker-{{ post.id }}">
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '😊')">😊</button>
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '😂')">😂</button>
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '❤️')">❤️</button>
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '😢')">😢</button>
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '😎')">😎</button>
+                                    <button style="font-size: 20px;" type="button" id="emojiButton-{{ post.id }}"
+                                        onclick="toggleEmojiPicker({{ post.id }})">😊</button>
+                                    <!-- Add more emojis as needed -->
+                                </div>
+                            </div>
+                            <!-- <button type="submit">Add Comment</button> -->
+                        </form>
+                        {% else %}
+                        <p><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}">register</a> to add
+                            a
+                            comment.
+                        </p>
+                        {% endif %}
+
+
+                    </div>
+                </div>
+
+                <script>
+                    // ________________________________
+                    //<!-- Emoji Button -->
+                    //________________________________
+                    // Initialize emoji pickers when the page loads
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Initialize emoji picker for new comment
+                        initializeEmojiPicker('emojiButton-{{ post.id }}', 'commentText-{{ post.id }}');
+
+                        // Initialize emoji pickers for edit forms
+                        {% for comment in post.comments.all %}
+                        initializeEmojiPicker('editEmojiButton-{{ comment.id }}', 'editText-{{ comment.id }}');
+                        {% endfor %}
+                    });
+
+                    function initializeEmojiPicker(buttonId, textareaId) {
+                        const button = document.getElementById(buttonId);
+                        const textarea = document.getElementById(textareaId);
+
+                        if (button && textarea) {
+                            const picker = new EmojiButton();
+
+                            picker.on('emoji', selection => {
+                                textarea.value += selection;
+                            });
+
+                            button.addEventListener('click', () => {
+                                picker.togglePicker(button);
+                            });
+                        }
+                    }
+                    // ________________________________
+                    //<!-- Emoji Button END-->
+                    //________________________________
+
+                    function deleteComment(commentId) {
+                        const url = `{% url 'delete_comment' 0 %}`.replace('0', commentId);
+
+                        fetch(url, {
+                            method: 'POST',
+                            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    document.getElementById(`comment-${commentId}`).remove();
+                                } else {
+                                    alert('Error deleting comment');
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+
+                    function showEditForm(commentId) {
+                        document.getElementById(`editForm-${commentId}`).style.display = 'block';
+                    }
+
+                    function submitEdit(commentId) {
+                        const url = `{% url 'edit_comment' 0 %}`.replace('0', commentId);
+                        const commentText = document.getElementById(`editText-${commentId}`).value;
+
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: new URLSearchParams({ comment_text: commentText })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    document.getElementById(`commentText-${commentId}`).innerText = data.comment_text;
+                                    document.getElementById(`editForm-${commentId}`).style.display = 'none';
+                                } else {
+                                    alert('Error editing comment');
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+
+                    function toggleLike(postId) {
+                        const url = "{% url 'like_post' 0 %}".replace('0', postId);
+                        const csrfToken = "{{ csrf_token }}";
+
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': csrfToken,
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    document.getElementById(`totalLikes-${postId}`).innerText = data.total_likes;
+                                    const likeButton = document.getElementById(`likeButton-${postId}`);
+                                    const likeIcon = likeButton.querySelector('.fa-thumbs-up');
+                                    const likeText = likeButton.querySelector('span');
+
+                                    if (data.liked) {
+                                        likeIcon.style.color = '#168323';
+                                        likeText.style.color = '#168323';
+                                    } else {
+                                        likeIcon.style.color = '';
+                                        likeText.style.color = '';
+                                    }
+
+                                    likeButton.classList.add('liked');
+                                    setTimeout(() => {
+                                        likeButton.classList.remove('liked');
+                                    }, 300);
+                                } else {
+                                    alert("Failed to like the post.");
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+
+                    document.getElementById('commentForm-{{ post.id }}').addEventListener('submit', function (e) {
+                        e.preventDefault();
+
+                        const formData = new FormData(this);
+                        const url = this.action;
+
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                            },
+                            body: formData
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    const commentsContainer = document.getElementById('commentsContainer-{{ post.id }}');
+
+                                    const noCommentsText = commentsContainer.querySelector('p');
+                                    if (noCommentsText && noCommentsText.textContent.includes("No comments yet")) {
+                                        noCommentsText.remove();
+                                    }
+
+                                    const newComment = document.createElement('div');
+                                    newComment.id = `comment-${data.comment_id}`;
+                                    newComment.innerHTML = `
+                                    <p><strong>${data.user}:</strong> <span id="commentText-${data.comment_id}">
+                                        ${data.comment_text}</span></p>
+                                    <a href="#" onclick="deleteComment(${data.comment_id}); return false;"><i class="fas fa-trash-alt"></i></a> |
+                                    <a href="#" onclick="showEditForm(${data.comment_id}); return false;"><i class="fas fa-edit"></i></a>
+                                    <form id="editForm-${data.comment_id}" method="POST" action="{% url 'edit_comment' 0 %}".replace('0', data.comment_id) style="display: none;">
+                                        {% csrf_token %}
+                                        <div class="comment-input-container">
+                                            <textarea name="comment_text" id="editText-${data.comment_id}">${data.comment_text}</textarea>
+                                            <button type="button" class="emoji-button" id="editEmojiButton-${data.comment_id}">😊</button>
+                                        </div>
+                                        <button type="button" onclick="submitEdit(${data.comment_id});"><i class="fas fa-save"></i> </button>
+                                        <button type="button" onclick="document.getElementById('editForm-${data.comment_id}').style.display='none';"><i class="fas fa-times"></i></button>
+                                    </form>
+                                `;
+
+                                    commentsContainer.appendChild(newComment);
+
+                                    // Initialize emoji picker for the new comment's edit form
+                                    initializeEmojiPicker(`editEmojiButton-${data.comment_id}`, `editText-${data.comment_id}`);
+
+                                    this.reset();
+                                } else {
+                                    alert("Failed to add comment.");
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    });
+                </script>
+
+                {% endfor %}
+
+                <!-- Pagination Controls -->
+                <<!-- Pagination Controls -->
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if posts.has_previous %}
+                            <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&laquo;
+                                First</a>
+                            <a
+                                href="?page={{ posts.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Previous</a>
+                            {% endif %}
+
+                            <span class="current">
+                                Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+                            </span>
+
+                            {% if posts.has_next %}
+                            <a
+                                href="?page={{ posts.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Next</a>
+                            <a
+                                href="?page={{ posts.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">&raquo;
+                                Last</a>
+                            {% endif %}
+                        </span>
+                    </div>
+            </main>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script>
+    // Typing effect for the blog heading
+    const text = "log Posts";  // Text to type after the 'B'
+    const element = document.getElementById("remaining-text");  // The part of the text that will be typed
+    let index = 0;  // Character index for typing effect
+
+    function typeEffect() {
+        // Start typing the remaining text after "B"
+        element.textContent = text.slice(0, index + 1);  // Typing the text
+        index++;
+
+        // Continue typing if there are characters remaining
+        if (index < text.length) {
+            setTimeout(typeEffect, 150);  // Typing speed
+        } else {
+            // Reset the typing effect once done and start typing again after a delay
+            setTimeout(() => {
+                index = 0;  // Reset index to 0
+                element.textContent = '';  // Clear the text
+                typeEffect();  // Start typing again
+            }, 1000);  // Add a delay before restarting
+        }
+    }
+
+    // Start the typing effect after the page has loaded
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+            element.classList.add("typing");  // Make the remaining text visible
+            typeEffect();  // Start typing
+        }, 500);  // Add delay for a smoother effect
+    });
+
+
+</script>
+
+<!-- Aside JavaScript Interactive -->
+<script>
+    // Collapsible Categories
+    document.querySelectorAll('.category-item').forEach((item) => {
+        item.addEventListener('click', () => {
+            const subcategories = item.querySelector('.subcategories');
+            if (subcategories) {
+                subcategories.style.display =
+                    subcategories.style.display === 'block' ? 'none' : 'block';
+            }
+        });
+    });
+
+    // Highlight Active Section
+    const categoriesList = document.querySelectorAll('.category-item');
+    window.addEventListener('scroll', () => {
+        const scrollPosition = window.scrollY;
+        categoriesList.forEach((category) => {
+            if (scrollPosition > category.offsetTop - 100) {
+                category.style.background = '#168323';
+                category.style.color = '#fff';
+            } else {
+                category.style.background = '#f9f9f9';
+                category.style.color = '#333';
+            }
+        });
+    });
+
+</script>
+
+<script>
+    /* _______________________________________________________________________
+ 
+// Function to scroll to the comment input section when comment icon is clicked
+ ___________________________________________________________________*/
+    function scrollToCommentInput(postId) {
+        const commentInput = document.getElementById('commentText-' + postId);
+        if (commentInput) {
+            // Smooth scroll to the comment input box
+            commentInput.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center', // Align the input box to the center of the screen
+            });
+
+            // Delay focus slightly to ensure smooth scroll completes
+            setTimeout(() => {
+                commentInput.focus(); // Place cursor in the input field
+            }, 300); // Adjust delay as needed (300ms should work in most cases)
+        }
+    }
+    /* _______________________________________________________________________
+ 
+  // Function to scroll to the comment input section when comment icon is clicked
+   ___________________________________________________________________*/
+
+
+
+
+    /* _______________________________________________________________________
+ 
+     // Function to enable the Send button when the user types
+     ___________________________________________________________________*/
+    function toggleSendButton(postId) {
+        const commentText = document.getElementById('commentText-' + postId);
+        const sendButton = document.getElementById('sendButton-' + postId);
+
+        // Enable button if there's text in the textarea
+        if (commentText.value.trim() !== "") {
+            sendButton.disabled = false;
+        } else {
+            sendButton.disabled = true;
+        }
+    }
+    /* _______________________________________________________________________
+ 
+ // Function to enable the Send button when the user types
+ ___________________________________________________________________*/
+
+</script>
+
+
+
+
+
+
+{% endblock %}

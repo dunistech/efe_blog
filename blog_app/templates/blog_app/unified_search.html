@@ -1,0 +1,91 @@
+{% extends "blog_app/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="container search-results">
+    <h2>Search Results for "{{ search_query }}"</h2>
+
+    {% if posts or users %}
+    <!-- Posts Section -->
+    {% if posts %}
+    <div class="posts-section">
+        <h3>Posts ({{ posts.count }})</h3>
+        <div class="row">
+            {% for post in posts %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    {% if post.media_file %}
+                    {% if post.media_type == 'image' %}
+                    <img src="{{ post.media_file.url }}" class="card-img-top" alt="{{ post.title }}">
+                    {% elif post.media_type == 'video' %}
+                    <video class="card-img-top" controls>
+                        <source src="{{ post.media_file.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% endif %}
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text">
+                            {{ post.content|truncatewords:20 }}
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">Category: {{ post.category.name }}</small>
+                        </p>
+                        <a href="{% url 'post_detail' post.id %}" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Users Section -->
+    {% if users %}
+    <div class="user-list-container mt-4">
+        <h3>Users ({{ users.count }})</h3>
+        <div class="user-list row">
+            {% for user in users %}
+            <div class="user-item col-lg-2 col-md-3 col-sm-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="user-info text-center">
+                            {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" alt="{{ user.username }}'s profile image"
+                                class="user-avatar rounded-circle mb-3" style="max-width: 100px; max-height: 100px;">
+                            {% else %}
+                            <img src="{% static 'blog_app/images/avatar.png' %}" alt="default avatar"
+                                class="user-avatar rounded-circle mb-3" style="max-width: 100px; max-height: 100px;">
+                            {% endif %}
+
+                            <h5 class="user-name card-title">{{ user.username }}</h5>
+
+                            {% if user.bio %}
+                            <p class="user-bio card-text text-muted">{{ user.bio|truncatewords:10 }}</p>
+                            {% endif %}
+
+                            <div class="user-actions mt-3">
+                                <a href="{% url 'profile_update' user.id %}" class="btn btn-primary btn-sm">View
+                                    Profile</a>
+                                {% if user != request.user %}
+                                <a href="{% url 'start_chat' user.id %}" class="btn btn-secondary btn-sm">Message</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No results found for "{{ search_query }}".
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

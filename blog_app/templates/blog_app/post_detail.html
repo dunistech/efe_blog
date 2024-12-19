@@ -1,0 +1,17 @@
+<h2>{{ post.title }}</h2>
+<p>{{ post.content }}</p>
+
+<!-- Display Post Image -->
+{% if post.image %}
+<img src="{{ post.image.url }}" alt="{{ post.title }}">
+{% endif %}
+
+<!-- Display Post Video -->
+{% if post.video %}
+<video controls>
+    <source src="{{ post.video.url }}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+{% endif %}
+
+<p><strong>Likes:</strong> {{ post.likes.count }}</p> <!-- Assuming you have a like system -->

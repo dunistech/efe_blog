@@ -1,0 +1,181 @@
+{% extends "blog_app/layout.html" %}
+{% load static %}
+
+
+{% block body %}
+<h2 class="chat-inbox-header">Chat Inbox</h2>
+<div class="chat-inbox">
+    {% for item in chat_rooms_with_unread %}
+    {% with item.chat_room as chat_room %}
+    <div class="chat-room">
+        <a href="{% url 'chat_room' chat_room.id %}" class="chat-link">
+            <div class="chat-avatar-container">
+                {% for participant in chat_room.participants.all %}
+                {% if participant != request.user %}
+                {% if participant.profile_image %}
+                <img src="{{ participant.profile_image.url }}" alt="{{ participant.username }}'s profile"
+                    class="profile-img">
+                {% else %}
+                <img src="{% static 'blog_app/images/avatar.png' %}" alt="default avatar" class="profile-img">
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="chat-info-container">
+                <div class="chat-info">
+                    <p class="chat-username"><strong>Chat with: </strong>
+                        {% for participant in chat_room.participants.all %}
+                        {% if participant != request.user %}
+                        {{ participant.username }}
+                        {% endif %}
+                        {% endfor %}
+                    </p>
+                    <p class="last-message">
+                        <strong>Last Message:</strong>
+                        {% if item.last_message %}
+                        {{ item.last_message.content|truncatewords:10 }}
+                        {% else %}
+                        No messages yet.
+                        {% endif %}
+                    </p>
+                </div>
+                {% if item.unread_count > 0 %}
+                <span class="badge bg-danger">{{ item.unread_count }}</span>
+                {% endif %}
+            </div>
+        </a>
+    </div>
+    {% endwith %}
+    {% empty %}
+    <p class="no-chats">No chats yet. Start a new chat!</p>
+    {% endfor %}
+</div>
+
+<style>
+    /* Chat Inbox Header */
+    .chat-inbox-header {
+        font-size: 32px;
+        color: #333;
+        text-align: center;
+        margin: 40px 0 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Chat Inbox Styling */
+    .chat-inbox {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-room {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+        position: relative;
+    }
+
+    .chat-room:hover {
+        background-color: #f1f1f1;
+    }
+
+    .chat-link {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .chat-avatar-container {
+        margin-right: 20px;
+    }
+
+    .profile-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #dcdcdc;
+    }
+
+    .chat-info-container {
+        display: flex;
+        justify-content: space-between;
+        flex: 1;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .chat-info {
+        flex: 1;
+        padding-right: 20px;
+    }
+
+    .chat-username {
+        font-size: 16px;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .last-message {
+        font-size: 14px;
+        color: #888;
+        line-height: 1.4;
+        margin-top: 5px;
+    }
+
+
+    .no-chats {
+        text-align: center;
+        font-size: 18px;
+        color: #aaa;
+    }
+
+    /* Media Queries for Responsive Design */
+    @media screen and (max-width: 768px) {
+        .chat-inbox {
+            padding: 10px;
+        }
+
+        .chat-room {
+            padding: 15px;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .chat-info {
+            padding-right: 10px;
+        }
+
+        .chat-username {
+            font-size: 14px;
+        }
+
+        .last-message {
+            font-size: 12px;
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 5px 10px;
+            min-width: 25px;
+            height: 25px;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,13 @@
+<!-- profile/templates/blog_app/profile.html -->
+{% extends "blog_app/layout.html" %}
+
+{% block body %}
+<h2>Profile</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update Profile</button>
+</form>
+
+{% endblock %}

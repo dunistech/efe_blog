@@ -1,0 +1,499 @@
+<!-- create_post/templates/blog_app/create_post.html -->
+{% extends "blog_app/layout.html" %}
+
+{% block body %}
+
+<div class="post-form-wrapper">
+    <div class="animated-bg">
+        <div class="animated-circle circle1"></div>
+        <div class="animated-circle circle2"></div>
+    </div>
+    <div class="gradient-line"></div>
+
+    <div class="form-header">Create New Post</div>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-row row">
+            <div class="form-label col-12 col-md-3">
+                <label for="title">Title</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <input type="text" class="form-control" name="title" id="title" required placeholder="Enter post title">
+            </div>
+        </div>
+
+        <div class="form-row row">
+            <div class="form-label col-12 col-md-3">
+                <label for="content">Content</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <textarea class="form-control" name="content" id="content" required
+                    placeholder="Write your post content here"></textarea>
+            </div>
+        </div>
+
+        <div class="form-row row">
+            <div class="form-label col-12 col-md-3">
+                <label for="category">Category</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <select class="form-control" name="category" required>
+                    <option value="">Select Category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row row">
+            <div class="form-label col-12 col-md-3">
+                <label>Media Type</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="media_type" value="image" id="image">
+                        Image
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="media_type" value="video" id="video">
+                        Video
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row row" id="image_input" style="display:none;">
+            <div class="form-label col-12 col-md-3">
+                <label for="image">Upload Image</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <input type="file" class="form-control" name="image" accept="image/*">
+            </div>
+        </div>
+
+        <div class="form-row row" id="video_input" style="display:none;">
+            <div class="form-label col-12 col-md-3">
+                <label for="video">Upload Video</label>
+            </div>
+            <div class="form-input col-12 col-md-9">
+                <input type="file" class="form-control" name="video" accept="video/*">
+            </div>
+        </div>
+
+        <div class="submit-row row">
+            <div class="col-12 col-md-9 offset-md-3">
+                <button type="submit" class="btn btn-primary">Create Post</button>
+            </div>
+        </div>
+    </form>
+    <div class="gradient-line2"></div>
+</div>
+
+
+<style>
+    /* Keep existing base styles */
+    /* Keep existing base styles */
+    .post-form-wrapper {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(22, 131, 35, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .animated-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+        z-index: -1;
+    }
+
+    .animated-circle {
+        position: absolute;
+        border-radius: 50%;
+    }
+
+    .circle1 {
+        width: 400px;
+        height: 400px;
+        background: #168323;
+        top: -150px;
+        right: -150px;
+        animation: moveCircle1 10s linear infinite;
+    }
+
+    .circle2 {
+        width: 300px;
+        height: 300px;
+        background: #ff7030;
+        bottom: -100px;
+        left: -100px;
+        animation: moveCircle2 8s linear infinite;
+    }
+
+    .gradient-line {
+        position: absolute;
+        height: 6px;
+        background: linear-gradient(90deg, #168323, #ff7030, #168323);
+        width: 100%;
+        top: 0;
+        left: 0;
+        background-size: 200% 100%;
+        animation: gradientMove 3s linear infinite;
+    }
+
+    .gradient-line2 {
+        position: absolute;
+        height: 6px;
+        background: linear-gradient(90deg, #168323, #ff7030, #168323);
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        background-size: 200% 100%;
+        animation: gradientMove 3s linear infinite;
+    }
+
+    @keyframes moveCircle1 {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        25% {
+            transform: translate(-50px, 100px);
+        }
+
+        50% {
+            transform: translate(-100px, 0);
+        }
+
+        75% {
+            transform: translate(-50px, -100px);
+        }
+
+        100% {
+            transform: translate(0, 0);
+        }
+    }
+
+    @keyframes moveCircle2 {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        25% {
+            transform: translate(100px, -50px);
+        }
+
+        50% {
+            transform: translate(0, -100px);
+        }
+
+        75% {
+            transform: translate(-100px, -50px);
+        }
+
+        100% {
+            transform: translate(0, 0);
+        }
+    }
+
+    @keyframes gradientMove {
+        0% {
+            background-position: 100% 0;
+        }
+
+        100% {
+            background-position: -100% 0;
+        }
+    }
+
+    .circle1,
+    .circle2 {
+        animation: pulse 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .circle1 {
+        animation: moveCircle1 15s linear infinite, pulse 4s ease-in-out infinite;
+    }
+
+    .circle2 {
+        animation: moveCircle2 12s linear infinite, pulse 4s ease-in-out infinite reverse;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: start;
+        margin-bottom: 25px;
+        gap: 30px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .form-row:hover {
+        transform: translateX(5px);
+    }
+
+    .form-label {
+        flex: 0 0 180px;
+        text-align: right;
+        padding-top: 12px;
+        font-weight: 600;
+        color: #168323;
+        font-size: 15px;
+    }
+
+    .form-input {
+        flex: 1;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #168323;
+        box-shadow: 0 0 0 3px rgba(22, 131, 35, 0.1);
+        transform: translateY(-2px);
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    select.form-control {
+        cursor: pointer;
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 30px;
+        padding: 12px 0;
+    }
+
+    .radio-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 15px;
+        color: #333;
+        transition: transform 0.3s ease;
+    }
+
+    .radio-label:hover {
+        transform: translateY(-2px);
+    }
+
+    .radio-label input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #168323;
+    }
+
+    .btn-primary {
+        background-color: #168323;
+        color: #fff;
+        padding: 14px 30px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary:hover {
+        background-color: #ff7030;
+        transform: translateY(-2px);
+    }
+
+    .btn-primary::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transform: rotate(45deg);
+        animation: buttonShine 2s infinite;
+    }
+
+    .submit-row {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 2px solid rgba(22, 131, 35, 0.1);
+    }
+
+    input[type="file"] {
+        padding: 10px;
+        background-color: rgba(248, 249, 250, 0.9);
+    }
+
+    input[type="file"]::file-selector-button {
+        padding: 8px 16px;
+        border-radius: 6px;
+        background-color: #168323;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        margin-right: 15px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+        background-color: #ff7030;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 40px;
+        color: #168323;
+        font-size: 24px;
+        font-weight: bold;
+        position: relative;
+        padding-bottom: 15px;
+    }
+
+    .form-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #168323, #ff7030);
+        border-radius: 3px;
+    }
+
+    /* Media Queries for Responsiveness */
+
+    /* For screens smaller than 768px (Tablets and below) */
+    @media (max-width: 768px) {
+        .form-row {
+            flex-direction: column;
+            /* Stack label and input vertically */
+            align-items: flex-start;
+            /* Align items to the left */
+        }
+
+        .form-label {
+            flex: 0 0 100%;
+            /* Make label take full width */
+            text-align: left;
+            padding-top: 8px;
+        }
+
+        .form-input {
+            flex: 1;
+        }
+
+        .form-control {
+            width: 100%;
+        }
+
+        .submit-row {
+            justify-content: center;
+        }
+
+        .gradient-line {
+            display: none;
+            /* Hide gradient line on small screens */
+        }
+
+        .post-form-wrapper {
+            padding: 20px;
+            /* Reduce padding for small screens */
+        }
+
+        .form-header {
+            font-size: 20px;
+            /* Adjust font size */
+        }
+    }
+
+    /* For screens smaller than 480px (Mobile) */
+    @media (max-width: 480px) {
+        .form-header {
+            font-size: 18px;
+            /* Further reduce font size */
+        }
+
+        .post-form-wrapper {
+            padding: 15px;
+            /* Reduce padding */
+        }
+
+        .form-label {
+            font-size: 14px;
+            /* Smaller font size for labels */
+        }
+
+        .form-control {
+            font-size: 14px;
+            /* Smaller font size for inputs */
+        }
+
+        .btn-primary {
+            font-size: 14px;
+            /* Adjust button size */
+            padding: 10px 20px;
+            /* Adjust padding */
+        }
+    }
+</style>
+
+<script>
+    // Show/hide the file inputs based on media type selected
+    document.getElementById("image").addEventListener("change", function () {
+        document.getElementById("image_input").style.display = "block";
+        document.getElementById("video_input").style.display = "none";
+    });
+    document.getElementById("video").addEventListener("change", function () {
+        document.getElementById("image_input").style.display = "none";
+        document.getElementById("video_input").style.display = "block";
+    });
+
+
+
+</script>
+
+
+{% endblock %}

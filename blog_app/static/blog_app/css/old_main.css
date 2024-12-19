@@ -1,0 +1,1048 @@
+/* Reset and Base Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Mulish', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+}
+
+
+
+h1.blog-head {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ff4602;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 20px 0;
+    position: relative;
+    font-family: 'Arial', sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+    min-width: 250px;
+    box-sizing: border-box;
+}
+
+#first-letter {
+    display: inline;
+    font-size: 2.5rem;
+    color: #ff4602;
+}
+
+#remaining-text {
+    display: inline;
+    font-size: 2.5rem;
+    color: #ff4602;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+h1.blog-head::after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 4px;
+    background-color: #ff4602;
+    margin: 10px auto 0;
+    border-radius: 5px;
+}
+
+#remaining-text.typing {
+    opacity: 1;
+    /* Fade in text */
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+
+
+/* Button Styling */
+.btn-primary {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #168323;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+}
+
+.btn-primary:hover {
+    background-color: #ff4602;
+}
+
+/* Hero Section Styling */
+.hero-section {
+    position: relative;
+    min-height: 50vh;
+    /* Adjust the minimum height to fit content while being responsive */
+    padding: 50px 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    /* Stack content vertically */
+    color: #fff;
+    text-align: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.hero-content .highlight {
+    color: #ff4602;
+}
+
+sup {
+    color: #168323;
+    /* Green color */
+    text-shadow: 0px 0px 5px rgb(255, 255, 255);
+    /* Subtle shadow */
+    font-size: 0.7em;
+    /* Slightly smaller font size */
+}
+
+
+/* Category Text Styling */
+#animated-category {
+    color: #ff4602;
+    /* Highlight the category text */
+    font-weight: bold;
+    transition: opacity 0.3s ease;
+    /* Smooth transition for animation */
+}
+
+/* Background Image Animation */
+.hero-section {
+    background-size: cover;
+    animation: fadeImages 15s infinite;
+}
+
+@keyframes fadeImages {
+
+    0%,
+    33% {
+        background-image: url('../images/bg1.jpg');
+    }
+
+    34%,
+    66% {
+        background-image: url('../images/bg2.jpg');
+    }
+
+    67%,
+    100% {
+        background-image: url('../images/bg3.jpg');
+    }
+}
+
+/* Moving Circle Effect */
+.moving-circle {
+    position: absolute;
+    bottom: 10%;
+    left: 20%;
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 70, 2, 0.5);
+    border-radius: 50%;
+    animation: moveCircle 8s infinite linear;
+}
+
+@keyframes moveCircle {
+    0% {
+        transform: translate(-50%, 0);
+    }
+
+    50% {
+        transform: translate(-50%, -30px);
+    }
+
+    100% {
+        transform: translate(-50%, 0);
+    }
+}
+
+/* like Button Style */
+/* .like-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.like-button:active {
+    transform: scale(0.95);
+} */
+
+/* like Button Style End */
+/* #profile-update-form {
+    display: none !important;
+} */
+
+
+/* Post Container */
+.post-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fcf9f9a8;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 2px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Post Header */
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    /* Separate header visually */
+    padding-bottom: 10px;
+
+}
+
+.profile-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 4px solid var(--primary-green);
+
+}
+
+.author-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+
+
+/* Post Body Comprehensive Styling */
+.post-body {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+}
+
+.post-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background-color: #168323;
+}
+
+.post-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #168323;
+    margin-bottom: 15px;
+    padding-left: 15px;
+    border-left: 3px solid #ff4602;
+    transition: color 0.3s ease;
+}
+
+.post-title:hover {
+    color: #168323;
+}
+
+.post-metadata {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.post-category {
+    display: inline-block;
+    background-color: rgba(22, 131, 35, 0.1);
+    color: #ff4602;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.post-content {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 15px;
+    padding: 0 10px;
+    border-left: 2px solid transparent;
+    transition: border-left-color 0.3s ease;
+}
+
+.post-content:hover {
+    border-left-color: #168323;
+}
+
+.post-time {
+    color: #ff4602;
+    font-size: 12px;
+    font-style: italic;
+    opacity: 0.8;
+}
+
+
+
+
+.post-media {
+    max-width: 600px;
+    /* Limits the width of the container */
+    margin: 0 auto;
+    /* Centers the media */
+    position: relative;
+    /* Makes it easier to layer content */
+    overflow: hidden;
+    /* Ensures the inner elements don't overflow */
+    border-radius: 16px;
+    /* Rounds the container edges */
+    background: linear-gradient(135deg, #168323 50%, #ff4602 100%);
+    /* Adds a gradient effect blending green shades */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    /* Adds a more pronounced shadow */
+}
+
+.post-media img,
+.post-media video {
+    width: 100%;
+    height: 400px;
+    object-fit: contain;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Add a curved decorative border inside */
+.post-media::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 0;
+    pointer-events: none;
+}
+
+
+
+/* Modal overlay */
+.media-modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    /* Makes it appear above all other elements */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Semi-transparent black background */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content */
+.modal-content {
+    position: relative;
+    max-width: 50%;
+    max-height: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content img,
+.modal-content video {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Close button */
+.close-modal {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+
+
+
+/* Post Footer Container */
+/* Post Footer Container */
+.post-footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+    gap: 15px;
+}
+
+/* Interaction Icons */
+.interaction-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Like Button */
+.like-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.like-button:active {
+    transform: scale(0.95);
+}
+
+.like-button i {
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.total-likes {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Comment Button */
+.comment-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.comment-button i {
+    font-size: 18px;
+    color: #888;
+}
+
+.comment-button:active {
+    transform: scale(0.95);
+}
+
+/* Comments Section */
+.comment {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.comment p {
+    font-size: 14px;
+}
+
+.comment .comment-input-container {
+    margin-top: 10px;
+}
+
+/* Container for textarea and send button */
+.textarea-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+
+
+/* Styled Textarea */
+:focus {
+    border-color: #168323;
+    /* Change to your brand color */
+}
+
+/* Send Button inside the textarea */
+.send-button {
+    position: absolute;
+    right: 10px;
+    /* Positioned inside the textarea */
+    background-color: #168323;
+    /* Green color or your preferred theme */
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+/* Disabled Send Button */
+.send-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Send button hover effect */
+.send-button:hover:not(:disabled) {
+    background-color: #ff4602;
+    /* Hover color (or your choice) */
+}
+
+/* Ensure other buttons inside .comment-input-container are unaffected */
+.comment-input-container button {
+    margin-right: 10px;
+    /* Ensure space between buttons */
+}
+
+
+
+
+
+/* Comment Form Styling */
+/* Comment Form Styling */
+.comment-form {
+    margin-top: 20px;
+}
+
+.comment-form textarea {
+    width: calc(100% - 40px);
+    /* Make room for the emoji button */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    resize: vertical;
+    padding-right: 40px;
+    /* Padding on the right for the emoji button */
+}
+
+.comment-input-container {
+    position: relative;
+}
+
+.emoji-button {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #888;
+    transition: color 0.3s ease;
+}
+
+.emoji-button:hover {
+    color: #168323;
+}
+
+/* Emoji Picker Styling */
+
+.emoji-pick button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.emoji-pick button:hover {
+    transform: scale(1.2);
+}
+
+.sml-emogi {
+    font-size: 9px !important;
+}
+
+
+/* _____________________________________________
+
+Delete, Edith, Save, Cancel Styling */
+/* Styling the comment container 
+_____________________________________________*/
+.comments-container {
+    max-height: 250px;
+    /* Set a fixed height for scrolling */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    padding: 10px;
+    border: 1px solid #ddd;
+    /* Light border around the container */
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    /* Light background for the container */
+    margin-top: 20px;
+
+}
+
+/* Styling individual comments */
+.comment {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling the username and comment text */
+.comment p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.comment strong {
+    color: #ff4602;
+    /* Red color for the username */
+}
+
+.comment span {
+    color: #555;
+    /* Darker color for the comment text */
+}
+
+/* Styling the Delete and Edit icons */
+.comment a {
+    font-size: 18px;
+    color: #007BFF;
+    text-decoration: none;
+    margin-right: 10px;
+    /* Space between the icons */
+}
+
+
+
+.comment a:hover {
+    color: #0056b3;
+    /* Darker blue on hover */
+}
+
+/* Styling for the Emoji button */
+.comment .emoji-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Styling the edit form buttons (Save, Cancel) */
+.comment button {
+    background-color: transparent;
+    color: #ff4602;
+    /* Matching button color */
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+/* Styling when hovering over the Save/Cancel buttons */
+.comment button:hover {
+    color: #a10202;
+}
+
+/* Make the icons bigger for better accessibility */
+.comment i {
+    font-size: 14px;
+    /* Icon size */
+}
+
+/* Hide the edit form by default */
+.comment .comment-input-container {
+    margin-top: 10px;
+}
+
+.comment textarea {
+    width: 100%;
+    height: 60px;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+    /* Disable resizing of the textarea */
+}
+
+
+
+
+
+
+
+/* Aside Styling  */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+.aside-left {
+    position: sticky;
+    top: 10px;
+    height: calc(100vh - 20px);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    border: 2px solid #168323;
+}
+
+.aside-left h3 {
+    color: #168323;
+    margin-bottom: 15px;
+}
+
+.aside-left ul {
+    list-style: none;
+    padding: 0;
+}
+
+.aside-left ul li {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    background: #f9f9f9;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.aside-left ul li:hover {
+    background: #168323;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.aside-left ul li .subcategories {
+    display: none;
+    margin-top: 10px;
+    margin-left: 15px;
+    padding-left: 10px;
+    border-left: 2px solid #168323;
+}
+
+.aside-left ul li:hover .subcategories {
+    display: block;
+}
+
+.badge {
+    background-color: #ff4602;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-right: 5px;
+    transition: transform 0.2s;
+}
+
+.badge:hover {
+    transform: scale(1.2);
+}
+
+#newsletter-signup {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #168323;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#newsletter-signup input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    outline: none;
+}
+
+#newsletter-signup button {
+    background-color: #ff4602;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#newsletter-signup button:hover {
+    background-color: #ff7030;
+}
+
+
+/*_____________________________
+ pagination Sytle
+_____________________________ */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+}
+
+.pagination .step-links a,
+.pagination .step-links span {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #333;
+    /* Default text color */
+    border: 1px solid #ccc;
+    /* Border for buttons */
+    border-radius: 4px;
+    /* Rounded corners */
+    background-color: white;
+    /* White background for buttons */
+    transition: all 0.3s ease;
+    /* Smooth transitions for hover effects */
+}
+
+.pagination .step-links a:hover {
+    color: white;
+    /* Change text color on hover */
+    background-color: #168323;
+    /* Change background color on hover */
+    border-color: #168323;
+    /* Change border color on hover */
+}
+
+.pagination .step-links .current {
+    font-weight: bold;
+    color: #168323;
+    /* Highlight current page number */
+    border: 1px solid #168323;
+    padding: 8px 12px;
+    background-color: #f5f5f5;
+    cursor: default;
+    /* Show pointer is disabled */
+}
+
+.pagination .step-links a:active {
+    transform: scale(0.95);
+    /* Add a slight scale effect when clicked */
+}
+
+/*_____________________________
+ pagination Sytle END
+_____________________________ */
+
+
+
+
+/* ____________________________________ 
+        Create Post Styles
+_____________________________________*/
+
+
+
+/* ____________________________________ 
+        Create Post Styles END
+_____________________________________*/
+
+
+
+/* ____________________________________ 
+        Update Profile  Styles
+_____________________________________*/
+:root {
+    --primary-green: #168323;
+    --primary-orange: #ff7030;
+    --white: #ffffff;
+    --text-gray: #6c757d;
+}
+
+body {
+    background-color: #f4f4f4;
+}
+
+.profile-container {
+    background-color: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-top: 50px;
+}
+
+.profile-header {
+    color: var(--primary-green);
+    margin-bottom: 30px;
+}
+
+.profile-overview {
+    padding: 20px;
+    border-right: 3px solid #eaeaea;
+}
+
+.profile-username {
+    color: var(--primary-green);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.profile-image-update {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 4px solid var(--primary-green);
+}
+
+.text-muted {
+    color: var(--text-gray);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.col-form-label {
+    color: var(--primary-green);
+    font-weight: bold;
+    text-align: right;
+}
+
+.form-control {
+    border-color: var(--primary-green);
+    border-radius: 8px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 0.2rem rgba(255, 112, 48, 0.25);
+}
+
+.btn-primary {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-orange);
+    border-color: var(--primary-orange);
+}
+
+.btn-secondary {
+    background-color: var(--primary-orange);
+    border-color: var(--primary-orange);
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+.update-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.update-btn button {
+    background-color: var(--primary-green);
+    color: var(--white);
+
+
+}

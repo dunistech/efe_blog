@@ -1,0 +1,254 @@
+<!-- blog/templates/blog/login.html -->
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'blog_app/css/main.css' %}">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Flash messages -->
+    <div class="flash-message">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            &nbsp;&nbsp;&nbsp; <button type="button" class="btn-close" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <main>
+        <div class="container">
+            <div class="row update-animation justify-content-center">
+                <div class="animated-bg">
+                    <div class="animated-circle circle1"></div>
+                    <div class="animated-circle circle2"></div>
+                </div>
+                <div class="gradient-line"></div>
+
+                <div class="col-lg-10 profile-container">
+                    <h2 class="text-center profile-header" style="font-weight: bold;">Login</h2>
+
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-4 text-center profile-overview">
+                            <img src="{% static 'blog_app/images/mobile-password-forgot.png' %}" alt="Login Icon"
+                                class="rounded-circle profile-image-updated mb-3">
+                            <h4 class="profile-username mb-2">Welcome Back!</h4>
+                            <p class="text-muted">Please enter your credentials to access your account.</p>
+                        </div>
+
+                        <div class="col-md-8">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+
+                                <!-- Username Input -->
+                                <div class="form-group mb-3">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username" required>
+                                </div>
+
+                                <!-- Password Input -->
+                                <div class="form-group mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Login</button>
+                                </div>
+                            </form>
+
+                            <p class="text-center mt-3">
+                                Don't have an account? <a href="{% url 'register' %}" class="text-primary">Register
+                                    here</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-line2"></div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        body {
+            font-family: 'Mulish', sans-serif;
+        }
+
+        /* Flash Message Styling */
+        .flash-message {
+            position: fixed;
+            top: 12%;
+            right: 30%;
+            z-index: 1050;
+            width: auto;
+            max-width: 350px;
+            color: #ff7030;
+        }
+
+        .flash-message .alert {
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            animation: fadeOut 4s ease-in-out forwards;
+        }
+
+        @keyframes fadeOut {
+
+            0%,
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Update Animation Container */
+        .update-animation {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(22, 131, 35, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .profile-image-updated {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .animated-circle {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .circle1 {
+            width: 400px;
+            height: 400px;
+            background: #168323;
+            top: -150px;
+            right: -150px;
+            animation: moveCircle1 10s linear infinite;
+        }
+
+        .circle2 {
+            width: 300px;
+            height: 300px;
+            background: #ff7030;
+            bottom: -100px;
+            left: -100px;
+            animation: moveCircle2 8s linear infinite;
+        }
+
+        .gradient-line,
+        .gradient-line2 {
+            position: absolute;
+            height: 6px;
+            background: linear-gradient(90deg, #168323, #ff7030, #168323);
+            width: 100%;
+            background-size: 200% 100%;
+            animation: gradientMove 3s linear infinite;
+        }
+
+        .gradient-line {
+            top: 0;
+        }
+
+        .gradient-line2 {
+            bottom: 0;
+        }
+
+        @keyframes moveCircle1 {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(-50px, 100px);
+            }
+
+            50% {
+                transform: translate(-100px, 0);
+            }
+
+            75% {
+                transform: translate(-50px, -100px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        @keyframes moveCircle2 {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(100px, -50px);
+            }
+
+            50% {
+                transform: translate(0, -100px);
+            }
+
+            75% {
+                transform: translate(-100px, -50px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 100% 0;
+            }
+
+            100% {
+                background-position: -100% 0;
+            }
+        }
+    </style>
+
+    <!-- Link To Close Flash Message  -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+{% extends "blog_app/layout.html" %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2>Your Notifications</h2>
+
+    <div class="notifications-list">
+        {% for notification in notifications %}
+        <div class="notification-item {% if not notification.is_read %}unread{% endif %} mb-3 p-3 border rounded">
+            <div class="notification-content">
+                {% if notification.notification_type == 'like' %}
+                <i class="fas fa-heart text-danger"></i>
+                {% elif notification.notification_type == 'comment' %}
+                <i class="fas fa-comment text-primary"></i>
+                {% endif %}
+
+                <span class="notification-text">{{ notification.text }}</span>
+
+                <small class="text-muted d-block mt-1">
+                    {{ notification.created_at|timesince }} ago
+                </small>
+            </div>
+
+            <a href="{% url 'post_detail' notification.post.id %}" class="btn btn-sm btn-outline-primary mt-2">
+                View Post
+            </a>
+        </div>
+        {% empty %}
+        <p>No notifications yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .notification-item {
+        background-color: #fff;
+        transition: background-color 0.3s;
+    }
+
+    .notification-item.unread {
+        background-color: #f8f9fa;
+        border-left: 4px solid #007bff;
+    }
+
+    .notification-content {
+        display: flex;
+        align-items: start;
+        gap: 10px;
+    }
+
+    .notification-text {
+        flex: 1;
+    }
+</style>
+{% endblock %}

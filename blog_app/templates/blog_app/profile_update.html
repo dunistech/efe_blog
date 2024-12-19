@@ -1,0 +1,868 @@
+{% extends "blog_app/layout.html" %}
+{% load static %}
+
+{% block body %}
+<!-- Add the Emoji Button Library at the top -->
+<script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.1.1/dist/index.min.js"></script>
+
+
+{% if is_own_profile %}
+
+<div class="container">
+    <div class="row update-animation justify-content-center">
+        <div class="animated-bg">
+            <div class="animated-circle circle1"></div>
+            <div class="animated-circle circle2"></div>
+        </div>
+        <div class="gradient-line"></div>
+
+        <div class="col-lg-10 profile-container">
+            <h2 class="text-center profile-header">Update Your Profile</h2>
+
+            <div class="row align-items-center mb-4">
+                <div class="col-md-4 text-center profile-overview">
+                    {% if profile_user.profile_image %}
+                    <img src="{{ profile_user.profile_image.url }}" alt="Profile Image"
+                        class="rounded-circle profile-image-update mb-3">
+                    {% else %}
+                    <!-- <div class="rounded-circle profile-image-update mb-3 d-flex align-items-center justify-content-center"
+                        style="background-color: #f1f1f1;">
+                        <span class="text-muted">No Image</span>
+                    </div> -->
+                    <img src="{% static 'blog_app/images/avatar.png' %}" alt="Profile Image"
+                        class="rounded-circle profile-image-update mb-3">
+                    {% endif %}
+
+                    <h4 class="profile-username mb-2">{{ profile_user.username }}</h4>
+                    <p class="text-muted">{{ profile_user.email }}</p>
+                    <p><strong>Bio:</strong> {{ profile_user.bio }}</p>
+                    <p><strong>Location:</strong> {{ profile_user.location }}</p>
+                </div>
+
+                <div class="col-md-8">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="form-group row">
+                            <label for="{{ form.profile_image.id_for_label }}" class="col-sm-4 col-form-label">Profile
+                                Image</label>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control" id="{{ form.profile_image.id_for_label }}"
+                                    name="{{ form.profile_image.name }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="{{ form.username.id_for_label }}"
+                                class="col-sm-4 col-form-label">Username</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="{{ form.username.id_for_label }}"
+                                    name="{{ form.username.name }}" value="{{ profile_user.username }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="{{ form.email.id_for_label }}" class="col-sm-4 col-form-label">Email</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control" id="{{ form.email.id_for_label }}"
+                                    name="{{ form.email.name }}" value="{{ profile_user.email }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="{{ form.bio.id_for_label }}" class="col-sm-4 col-form-label">Bio</label>
+                            <div class="col-sm-8">
+                                <textarea class="form-control" id="{{ form.bio.id_for_label }}"
+                                    name="{{ form.bio.name }}" rows="3">{{ profile_user.bio }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="{{ form.location.id_for_label }}"
+                                class="col-sm-4 col-form-label">Location</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="{{ form.location.id_for_label }}"
+                                    name="{{ form.location.name }}" value="{{ profile_user.location }}">
+                            </div>
+                        </div>
+
+                        <div class="update-btn">
+                            <button type="submit" class="btn">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="gradient-line2"></div>
+    </div>
+</div>
+{% else %}
+
+<div class="container">
+    <div class="row update-animation justify-content-center">
+        <div class="animated-bg">
+            <div class="animated-circle circle1"></div>
+            <div class="animated-circle circle2"></div>
+        </div>
+        <div class="gradient-line"></div>
+
+        <div class="col-lg-8 profile-container">
+            <h2 class="text-center profile-header">{{ profile_user.username }}</h2>
+
+            <div class="row align-items-center mb-4">
+                <div class="col-md-11 text-center profile-overview">
+                    {% if profile_user.profile_image %}
+                    <img src="{{ profile_user.profile_image.url }}" alt="Profile Image"
+                        class="rounded-circle profile-image-update mb-3"
+                        style="width: 300px; height: 300px; border: 7px solid #168323">
+                    {% else %}
+                    <img src="{% static 'blog_app/images/avatar.png' %}" alt="Profile Image"
+                        class="rounded-circle profile-image-update mb-3"
+                        style="width: 300px; height: 300px; border: 7px solid #168323">
+                    {% endif %}
+
+                    <h4 class="profile-username mb-2">{{ profile_user.username }}</h4>
+                    <p class="text-muted">{{ profile_user.email }}</p>
+                    <p><strong>Bio:</strong> {{ profile_user.bio }}</p>
+                    <p><strong>Location:</strong> {{ profile_user.location }}</p>
+                    <a href="{% url 'start_chat' profile_user.id %}" id="message-btn"
+                        class="btn btn-secondary">Message</a>
+                </div>
+            </div>
+        </div>
+        <div class="gradient-line2"></div>
+    </div>
+</div>
+{% endif %}
+
+
+
+
+
+<style>
+    /* Keep existing base styles */
+    /* Keep existing base styles */
+    .update-animation {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(22, 131, 35, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+
+
+    .animated-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+        z-index: -1;
+    }
+
+    .animated-circle {
+        position: absolute;
+        border-radius: 50%;
+    }
+
+    .circle1 {
+        width: 400px;
+        height: 400px;
+        background: #168323;
+        top: -150px;
+        right: -150px;
+        animation: moveCircle1 10s linear infinite;
+    }
+
+    .circle2 {
+        width: 300px;
+        height: 300px;
+        background: #ff7030;
+        bottom: -100px;
+        left: -100px;
+        animation: moveCircle2 8s linear infinite;
+    }
+
+    .gradient-line {
+        position: absolute;
+        height: 6px;
+        background: linear-gradient(90deg, #168323, #ff7030, #168323);
+        width: 100%;
+        top: 0;
+        left: 0;
+        background-size: 200% 100%;
+        animation: gradientMove 3s linear infinite;
+    }
+
+    .gradient-line2 {
+        position: absolute;
+        height: 6px;
+        background: linear-gradient(90deg, #168323, #ff7030, #168323);
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        background-size: 200% 100%;
+        animation: gradientMove 3s linear infinite;
+    }
+
+    @keyframes moveCircle1 {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        25% {
+            transform: translate(-50px, 100px);
+        }
+
+        50% {
+            transform: translate(-100px, 0);
+        }
+
+        75% {
+            transform: translate(-50px, -100px);
+        }
+
+        100% {
+            transform: translate(0, 0);
+        }
+    }
+
+    @keyframes moveCircle2 {
+        0% {
+            transform: translate(0, 0);
+        }
+
+        25% {
+            transform: translate(100px, -50px);
+        }
+
+        50% {
+            transform: translate(0, -100px);
+        }
+
+        75% {
+            transform: translate(-100px, -50px);
+        }
+
+        100% {
+            transform: translate(0, 0);
+        }
+    }
+
+    @keyframes gradientMove {
+        0% {
+            background-position: 100% 0;
+        }
+
+        100% {
+            background-position: -100% 0;
+        }
+    }
+
+    .circle1,
+    .circle2 {
+        animation: pulse 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .circle1 {
+        animation: moveCircle1 15s linear infinite, pulse 4s ease-in-out infinite;
+    }
+
+    .circle2 {
+        animation: moveCircle2 12s linear infinite, pulse 4s ease-in-out infinite reverse;
+    }
+
+
+    input[type="file"]::file-selector-button {
+        padding: 8px 16px;
+        border-radius: 6px;
+        background-color: #168323;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        margin-right: 15px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+        background-color: #ff7030;
+    }
+</style>
+
+
+
+
+{% if is_own_profile %}
+<h1 style="color: #168323; font-size: 18px; text-align: center; text-decoration: underline; font-weight: bold;">Your
+    Posts </h1>
+{% else %}
+<h1 style="color: #168323; font-size: 18px; text-align: center; text-decoration: underline; font-weight: bold;"> Posts
+</h1>
+{% endif %}
+
+
+
+<div class="container">
+    <div class="row">
+        <!-- Left Aside Content -->
+        <!-- Left Sidebar -->
+        <div class="col-md-3">
+            <aside class="aside-left" id="aside-left-id">
+                <!-- Newsletter -->
+                <form id="newsletter-signup">
+
+                    <a class="navbar-brand" href="{% url 'index' %}">
+                        <img src="{% static 'blog_app/images/logo.png' %}" alt="logo">
+                        &nbsp; Dunis Tech
+                    </a>
+                    <h4>Subscribe to Our Newsletter</h4>
+                    <input type="email" placeholder="Your Email" required />
+                    <button type="submit">Subscribe</button>
+                </form>
+
+                <!-- Categories -->
+                <h3>Categories</h3>
+                <ul id="categories-list">
+                    <li class="category-item">
+                        <span>Technology</span>
+                        <ul class="subcategories">
+                            <li>AI</li>
+                            <li>Web Development</li>
+                            <li>Mobile Apps</li>
+                        </ul>
+                    </li>
+                    <li class="category-item">Health</li>
+                    <li class="category-item">Lifestyle</li>
+                </ul>
+
+                <!-- Trending Topics -->
+                <h3>Trending Topics</h3>
+                <ul id="trending-list">
+                    <li><span class="badge">#AI</span></li>
+                    <li><span class="badge">#Startups</span></li>
+                    <li><span class="badge">#Travel</span></li>
+                </ul>
+
+                <!-- Recent Comments -->
+                <h3>Recent Comments</h3>
+                <ul>
+                    <li>"Great insights on AI!" - John</li>
+                    <li>"Loved the travel tips!" - Jane</li>
+                </ul>
+
+                <!-- Archives -->
+                <h3>Archives</h3>
+                <ul id="archives-list">
+                    <li>November 2024</li>
+                    <li>October 2024</li>
+                    <li>September 2024</li>
+                </ul>
+            </aside>
+        </div>
+
+
+
+
+        <!-- User's Posts and Activities -->
+        <!-- User's Posts and Activities -->
+        <div class="col-md-9">
+
+            <div class="user-activities mt-4">
+                {% if user_posts %}
+                {% for post in user_posts %}
+                <div class="post">
+                    <div class="post-container">
+                        <!-- Post Header -->
+                        <div class="post-header">
+                            {% if post.author.profile_image %}
+                            <a href="{% url 'profile_update' post.author.id %}" class="profile-link">
+                                <img src="{{ post.author.profile_image.url }}" alt="Profile Image"
+                                    class="profile-image">
+                                <span class="author-name">{{ post.author.username }}</span>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'profile_update' post.author.id %}" class="profile-link">
+                                <img src="{ static 'default-profile.png' }" alt="Default Profile" class="profile-image">
+                                <span class="author-name">{{ post.author.username }}</span>
+                            </a>
+                            {% endif %}
+                            <span class="post-time">{{ post.created_at }}</span>
+                             {% if post.author == request.user %}
+                            <div class="custom-post-options">
+                                <!-- Vertical three dots icon for the dropdown toggle -->
+                                <button class="custom-dropdown-toggle" onclick="toggleCustomDropdown(this)">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <div class="custom-dropdown-menu">
+                                    <a href="{% url 'update_post' post.id %}" class="custom-btn">Edit</a>
+                                    <a href="{% url 'delete_post' post.id %}" class="custom-btn"
+                                        onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+                                </div>
+                                
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Post Body -->
+                        <div class="post-body">
+                            <div id="post-{{ post.id }}" class="post-card">
+                                <!-- Post Content -->
+                                <div class="post-content-wrapper">
+                                    <h2 class="post-title">{{ post.title }}</h2>
+                                    <p class="post-category">Category: <span>{{ post.category.name }}</span></p>
+                                    <div class="post-content-container" data-full-content="{{ post.content }}">
+                                        <p class="post-content">
+                                            {{ post.content }}
+                                        </p>
+                                    </div>
+                                    <button class="read-more-btn" style="display: none;">Read More...</button>
+                                </div>
+
+                                <!-- Post Media -->
+                                {% if post.media_file %}
+                                <div class="post-media">
+                                    {% if post.media_type == 'image' %}
+                                    <img src="{{ post.media_file.url }}" alt="Post Image" class="media-thumbnail" />
+                                    {% elif post.media_type == 'video' %}
+                                    <video controls class="media-thumbnail">
+                                        <source src="{{ post.media_file.url }}" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Modal Structure -->
+                        <div id="media-modal" class="media-modal">
+                            <span class="close-modal">&times;</span>
+                            <div class="modal-content">
+                                <img id="modal-image" alt="Full Image" />
+                                <video id="modal-video" controls>
+                                    <source id="modal-video-source" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+
+
+
+                        <!-- Post Footer -->
+                        <div class="post-footer">
+                            <div class="interaction-icons">
+                                <!-- Like Icon -->
+                                {% if user.is_authenticated %}
+                                <button id="likeButton-{{ post.id }}" class="like-button"
+                                    onclick="toggleLike({{ post.id }})">
+                                    <i id="likeIcon-{{ post.id }}" class="fa-solid fa-thumbs-up"
+                                        style="{% if post.has_liked %}color: #168323;{% endif %}"></i>
+                                    <span id="totalLikes-{{ post.id }}" class="total-likes">{{post.total_likes}}</span>
+                                </button>
+                                {% else %}
+                                <i id="likeIcon-{{ post.id }}" class="fa-solid fa-thumbs-up"
+                                    style="{% if post.has_liked %}color: #168323;{% endif %}"></i>
+                                <span id="totalLikes-{{ post.id }}" class="total-likes">{{ post.total_likes }}</span>
+                                {% endif %}
+                                <!-- Comment Icon -->
+                                <button class="comment-button" onclick="scrollToCommentInput({{ post.id }})">
+                                    <i class="fa-solid fa-comment-dots"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div class="comments-container" id="commentsContainer-{{ post.id }}">
+                            {% for comment in post.comments.all %}
+                            <div id="comment-{{ comment.id }}" class="comment">
+                                <p><strong>{{ comment.user.username }}:</strong><br>
+                                    <span id="commentText-{{ comment.id }}">{{ comment.comment_text }}</span>
+                                </p>
+
+                                {% if user.is_authenticated and user == comment.user %}
+                                <!-- Delete and Edit options for comment owner only -->
+                                <a href="#" onclick="deleteComment({{ comment.id }}); return false;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a> |
+                                <a href="#" onclick="showEditForm({{ comment.id }}); return false;">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+
+                                <!-- Hidden Edit Form -->
+                                <form id="editForm-{{ comment.id }}" method="POST"
+                                    action="{% url 'edit_comment' comment.id %}" style="display: none;">
+                                    {% csrf_token %}
+                                    <div class="comment-input-container">
+                                        <textarea name="comment_text"
+                                            id="editText-{{ comment.id }}">{{ comment.comment_text }}</textarea>
+                                        <button type="button" class="emoji-button"
+                                            id="editEmojiButton-{{ comment.id }}">
+                                            <i class="fas fa-smile"></i>
+                                        </button>
+                                    </div>
+                                    <button type="button" onclick="submitEdit({{ comment.id }});">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                    <button type="button"
+                                        onclick="document.getElementById('editForm-{{ comment.id }}').style.display='none';">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                            {% empty %}
+                            <p>No comments yet.</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Comment Form -->
+                        {% if user.is_authenticated %}
+                        <form id="commentForm-{{ post.id }}" method="POST" action="{% url 'add_comment' post.id %}"
+                            class="comment-form">
+                            {% csrf_token %}
+                            <div class="comment-input-container">
+                                <div class="textarea-container">
+                                    <textarea
+                                        style="resize: none !important; width: 100%; height: 40px; padding: 10px; border: 1px solid #ccc; border-radius: 20px; font-size: 14px; line-height: 20px; outline: none; transition: border-color 0.3s ease;"
+                                        name="comment_text" id="commentText-{{ post.id }}"
+                                        placeholder="Write your comment..." rows="2" cols="40"
+                                        oninput="toggleSendButton({{ post.id }})"></textarea>
+                                    <button type="submit" id="sendButton-{{ post.id }}" class="send-button" disabled>
+                                        <i class="fa-solid fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                                <div class="emoji-pick" id="emojiPicker-{{ post.id }}">
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '😊')">😊</button>
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '😂')">😂</button>
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '❤️')">❤️</button>
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '😢')">😢</button>
+                                    <button class="sml-emogi" type="button"
+                                        onclick="insertEmoji({{ post.id }}, '😎')">😎</button>
+                                    <button style="font-size: 20px;" type="button" id="emojiButton-{{ post.id }}"
+                                        onclick="toggleEmojiPicker({{ post.id }})">😊</button>
+                                </div>
+                            </div>
+                        </form>
+                        {% else %}
+                        <p><a href="{% url 'login' %}">Log in</a> or <a href="{% url 'register' %}">register</a> to add
+                            a
+                            comment.
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p>You have no posts yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .like-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .like-button:active {
+        transform: scale(0.95);
+    }
+
+    .comment-input-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .emoji-button {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+
+
+
+
+
+
+
+<script>
+    //________________________________________
+    //Edith Profile Form [ Toggle profile edit form ]
+    //____________________________________//
+
+
+
+    //___________________________________________________________
+    //Edith Profile Form [ Toggle profile edit form ] END
+    //___________________________________________________//
+
+
+    // ________________________________
+    //<!-- Emoji Button -->
+    //________________________________
+    // Emoji picker initialization
+    document.addEventListener('DOMContentLoaded', function () {
+        {% for post in user_posts %}
+        // Initialize emoji picker for new comment
+        initializeEmojiPicker('emojiButton-{{ post.id }}', 'commentText-{{ post.id }}');
+
+        // Initialize emoji pickers for edit forms
+        {% for comment in post.comments.all %}
+        initializeEmojiPicker('editEmojiButton-{{ comment.id }}', 'editText-{{ comment.id }}');
+        {% endfor %}
+        {% endfor %}
+    });
+
+    function initializeEmojiPicker(buttonId, textareaId) {
+        const button = document.getElementById(buttonId);
+        const textarea = document.getElementById(textareaId);
+
+        if (button && textarea) {
+            const picker = new EmojiButton();
+
+            picker.on('emoji', selection => {
+                textarea.value += selection;
+            });
+
+            button.addEventListener('click', () => {
+                picker.togglePicker(button);
+            });
+        }
+    }
+    // ________________________________
+    //<!-- Emoji Button END-->
+    //________________________________
+
+
+
+    function deleteComment(commentId) {
+        const url = `{% url 'delete_comment' 0 %}`.replace('0', commentId);
+
+        fetch(url, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById(`comment-${commentId}`).remove();
+                } else {
+                    alert('Error deleting comment');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function showEditForm(commentId) {
+        document.getElementById(`editForm-${commentId}`).style.display = 'block';
+    }
+
+    function submitEdit(commentId) {
+        const url = `{% url 'edit_comment' 0 %}`.replace('0', commentId);
+        const commentText = document.getElementById(`editText-${commentId}`).value;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ comment_text: commentText })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById(`commentText-${commentId}`).innerText = data.comment_text;
+                    document.getElementById(`editForm-${commentId}`).style.display = 'none';
+                } else {
+                    alert('Error editing comment');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function toggleLike(postId) {
+        const url = "{% url 'like_post' 0 %}".replace('0', postId);
+        const csrfToken = "{{ csrf_token }}";
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById(`totalLikes-${postId}`).innerText = data.total_likes;
+                    const likeButton = document.getElementById(`likeButton-${postId}`);
+                    const likeIcon = likeButton.querySelector('.fa-thumbs-up');
+                    const likeText = likeButton.querySelector('span');
+
+                    if (data.liked) {
+                        likeIcon.style.color = '#168323';
+                        likeText.style.color = '#168323';
+                    } else {
+                        likeIcon.style.color = '';
+                        likeText.style.color = '';
+                    }
+
+                    likeButton.classList.add('liked');
+                    setTimeout(() => {
+                        likeButton.classList.remove('liked');
+                    }, 300);
+                } else {
+                    alert("Failed to like the post.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+
+
+    // Add comment form submission
+    {% for post in user_posts %}
+    document.getElementById('commentForm-{{ post.id }}').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const url = this.action;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const commentsContainer = document.getElementById('commentsContainer-{{ post.id }}');
+
+                    const noCommentsText = commentsContainer.querySelector('p');
+                    if (noCommentsText && noCommentsText.textContent.includes("No comments yet")) {
+                        noCommentsText.remove();
+                    }
+
+                    const newComment = document.createElement('div');
+                    newComment.id = `comment-${data.comment_id}`;
+                    newComment.innerHTML = `
+                    <p><strong>${data.user}:</strong> <span id="commentText-${data.comment_id}">
+                        ${data.comment_text}</span></p>
+                    <a href="#" onclick="deleteComment(${data.comment_id}); return false;"><i class="fas fa-trash-alt"></i></a> |
+                    <a href="#" onclick="showEditForm(${data.comment_id}); return false;"><i class="fas fa-edit"></i></a>
+                    <form id="editForm-${data.comment_id}" method="POST" action="{% url 'edit_comment' 0 %}".replace('0', data.comment_id) style="display: none;">
+                        {% csrf_token %}
+                        <div class="comment-input-container">
+                            <textarea name="comment_text" id="editText-${data.comment_id}">${data.comment_text}</textarea>
+                            <button type="button" class="emoji-button" id="editEmojiButton-${data.comment_id}">😊</button>
+                        </div>
+                        <button type="button" onclick="submitEdit(${data.comment_id});"><i class="fas fa-save"></i> </button>
+                        <button type="button" onclick="document.getElementById('editForm-${data.comment_id}').style.display='none';"><i class="fas fa-times"></i></button>
+                    </form>
+                `;
+
+                    commentsContainer.appendChild(newComment);
+
+                    // Initialize emoji picker for the new comment's edit form
+                    initializeEmojiPicker(`editEmojiButton-${data.comment_id}`, `editText-${data.comment_id}`);
+
+                    this.reset();
+                } else {
+                    alert("Failed to add comment.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+    {% endfor %}
+</script>
+
+
+
+
+<script>
+    /* _______________________________________________________________________
+ 
+// Function to scroll to the comment input section when comment icon is clicked
+ ___________________________________________________________________*/
+    function scrollToCommentInput(postId) {
+        const commentInput = document.getElementById('commentText-' + postId);
+        if (commentInput) {
+            // Smooth scroll to the comment input box
+            commentInput.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center', // Align the input box to the center of the screen
+            });
+
+            // Delay focus slightly to ensure smooth scroll completes
+            setTimeout(() => {
+                commentInput.focus(); // Place cursor in the input field
+            }, 300); // Adjust delay as needed (300ms should work in most cases)
+        }
+    }
+    /* _______________________________________________________________________
+ 
+  // Function to scroll to the comment input section when comment icon is clicked
+   ___________________________________________________________________*/
+
+
+
+
+    /* _______________________________________________________________________
+ 
+     // Function to enable the Send button when the user types
+     ___________________________________________________________________*/
+    function toggleSendButton(postId) {
+        const commentText = document.getElementById('commentText-' + postId);
+        const sendButton = document.getElementById('sendButton-' + postId);
+
+        // Enable button if there's text in the textarea
+        if (commentText.value.trim() !== "") {
+            sendButton.disabled = false;
+        } else {
+            sendButton.disabled = true;
+        }
+    }
+    /* _______________________________________________________________________
+ 
+ // Function to enable the Send button when the user types
+ ___________________________________________________________________*/
+
+</script>
+{% endblock %}

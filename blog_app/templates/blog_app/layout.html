@@ -1,0 +1,325 @@
+{% load static %}
+{% load notification_tags %} <!-- Add this at the top of your template -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Layout</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="{% static 'blog_app/css/main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script src='main.js'></script>
+</head>
+<style>
+    .messages p {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+
+    .messages .success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .messages .error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+</style>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #168323;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}"><img src="{% static 'blog_app/images/logo.png' %}"
+                    style="border-radius: 50%;" alt="logo">&nbsp; Dunis Tech</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_post' %}"><i class="fas fa-edit"></i> Create Post</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'user_list' %}"><i class="fas fa-users"></i> Users</a>
+                    </li>
+                </ul>
+
+                <!-- Search Forms -->
+                <div class="d-flex me-3">
+                    <!-- Search Blog Post Form -->
+                    <form class="d-flex me-3" method="get" action="{% url 'search_view' %}">
+                        <input class="form-control me-2" type="search" name="q" placeholder="Search posts..."
+                            value="{{ request.GET.q }}">
+                        <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+
+                    <!-- Search User Form -->
+                    <form class="d-flex" method="GET" action="{% url 'user_list' %}">
+                        <input class="form-control me-2" type="search" name="search" placeholder="Search users..."
+                            value="{{ request.GET.search }}">
+                        <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                </div>
+
+                <!-- Authenticated User Links -->
+                {% if user.is_authenticated %}
+                <ul class="navbar-nav">
+                    <!-- Notifications -->
+                    <li class="nav-item">
+                        <a class="nav-link icon" href="{% url 'notifications' %}">
+                            <i class="fas fa-bell"></i>
+                            {% get_unread_notifications_count user as unread_count %}
+                            <span id="notification-count" class="badge bg-danger">
+                                {{ unread_count }}
+                            </span>
+                        </a>
+                    </li>
+                    <!-- Messages -->
+                    <li class="nav-item">
+                        <a class="nav-link icon" href="{% url 'chat_inbox' %}">
+                            <i class="fas fa-envelope"></i>
+                            <span id="unread-count" class="badge bg-danger"
+                                style="display: {% if unread_messages_count > 0 %}inline{% else %}none{% endif %};">
+                                {{ unread_messages_count }}
+                            </span>
+                        </a>
+                    </li>
+                    <!-- Profile Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                            role="button" data-bs-toggle="dropdown">
+                            {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" alt="Profile Picture" class="rounded-circle"
+                                style="width: 30px; height: 30px; margin-right: 5px;">
+                            {{ user.username }}
+                            {% else %}
+                            <p>No Profile</p>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user-circle"></i>
+                                    Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile_update' user.id %}"><i
+                                        class="fas fa-edit"></i> Edit Profile</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>
+                                    Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                {% else %}
+                <!-- Guest Links -->
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash messages -->
+    <div class="flash-message">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            &nbsp;&nbsp;&nbsp; <button type="button" class="btn-close" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <style>
+        /* Flash message container */
+        .flash-message {
+            position: fixed;
+            top: 60px;
+            right: 50%;
+            width: 500px;
+            z-index: 1050;
+            /* Higher than Bootstrap modal to ensure visibility */
+        }
+
+        /* Base alert styling */
+        .alert {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            font-family: 'Arial', sans-serif;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Success message */
+        .alert-success {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+
+        /* Info message */
+        .alert-info {
+            background-color: #cff4fc;
+            border-color: #b6effb;
+            color: #055160;
+        }
+
+        /* Warning message */
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+            color: #664d03;
+        }
+
+        /* Error/Danger message */
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            color: #842029;
+        }
+
+        /* Close button styling */
+        .btn-close {
+            color: inherit;
+            opacity: 0.8;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+            color: #000;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <div class="body">
+        {% block body %}
+        {% endblock %}
+    </div>
+
+    <script>
+
+        // Add this to your base template or a separate JS file
+        function updateNotificationCount() {
+            fetch('/notifications/count/')
+                .then(response => response.json())
+                .then(data => {
+                    const countElement = document.getElementById('notification-count');
+                    if (countElement) {
+                        countElement.textContent = data.count;
+                        countElement.style.display = data.count > 0 ? 'inline' : 'none';
+                    }
+                });
+        }
+
+        // Update count every minute
+        setInterval(updateNotificationCount, 60000);
+    </script>
+
+
+
+    <!-- Add to layout.html scripts -->
+    <script>
+        function updateUnreadMessagesCount() {
+            fetch('{% url "get_unread_messages_count" %}')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('unread-count');
+                    if (data.count > 0) {
+                        badge.textContent = data.count;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Error fetching general unread message count:', error));
+        }
+
+        // Poll for general unread messages every 5 seconds
+        setInterval(updateUnreadMessagesCount, 5000);
+        updateUnreadMessagesCount(); // Initial call
+
+    </script>
+
+
+
+    <script>
+        function fetchUnreadCounts() {
+            fetch("{% url 'fetch_unread_counts' %}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.counts) {
+                        data.counts.forEach(item => {
+                            const chatRoomId = item.chat_room_id;
+                            const count = item.unread_count;
+
+                            const badge = document.querySelector(.chat - room[data - chat - room - id="${chatRoomId}"] .badge);
+                            if (badge) {
+                                if (count > 0) {
+                                    badge.textContent = count;
+                                    badge.style.display = "inline-block";
+                                } else {
+                                    badge.style.display = "none";
+                                }
+                            }
+                        });
+
+                        // Also update the general notification count
+                        updateUnreadMessagesCount();
+                    }
+                })
+                .catch(error => console.error('Error fetching per-user unread counts:', error));
+        }
+
+        // Poll for per-user unread messages every 5 seconds
+        setInterval(fetchUnreadCounts, 5000);
+        fetchUnreadCounts(); // Initial call
+
+    </script>
+
+    <!-- Bootstrap JS (after the body content) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'blog_app/js/main.js' %}"></script>
+
+</body>
+
+</html>

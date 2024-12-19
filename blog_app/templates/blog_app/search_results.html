@@ -1,0 +1,35 @@
+{% extends "blog_app/layout.html" %}
+
+{% block body %}
+
+<!-- Search Results Section -->
+<div class="search-results">
+    {% if search_results %}
+    <h2>Search Results for "{{ search_query }}"</h2>
+    {% for post in search_results %}
+    <div class="result-item">
+        <h3>{{ post.title }}</h3>
+        <p>Category: {{ post.category.name }}</p>
+        <p>{{ post.content|truncatewords:20 }}</p>
+
+        <!-- Display Post Media (Image or Video) -->
+        {% if post.media_file %}
+        <div class="media">
+            {% if post.media_type == 'image' %}
+            <img src="{{ post.media_file.url }}" alt="Post Image" width="300">
+            {% elif post.media_type == 'video' %}
+            <video width="300" controls>
+                <source src="{{ post.media_file.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>No results found for your search.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

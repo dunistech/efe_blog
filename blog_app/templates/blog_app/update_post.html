@@ -1,0 +1,234 @@
+{% extends "blog_app/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<style>
+    .post-form-wrapper {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-width: 800px;
+        margin: 20px auto;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    .form-header {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1da955;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .media-preview {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        background: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    
+    .media-thumbnail {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 8px;
+    }
+    
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .form-label {
+        flex: 0 0 30%;
+        font-weight: bold;
+        color: #333;
+        text-align: right;
+        margin-right: 15px;
+    }
+    
+    .form-input {
+        flex: 1;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    
+    .radio-group {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .radio-label {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+    }
+    
+    .radio-label input {
+        margin-right: 8px;
+    }
+    
+    .submit-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    
+    .btnn {
+        background-color: #1da955;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .btnn:hover {
+        background-color: #ff7030;
+    }
+    
+    .gradient-line,
+    .gradient-line2 {
+        height: 4px;
+        background: linear-gradient(to right, #1da955, #ff7030);
+        margin: 10px 0;
+    }
+    </style>
+    
+    <div class="post-form-wrapper">
+        <div class="form-header">Update Post</div>
+        <div class="gradient-line"></div>
+    
+        <div class="media-preview">
+            {% if post.media_type == 'image' and post.media_file %}
+            <img src="{{ post.media_file.url }}" alt="Post Image" class="media-thumbnail" />
+            {% elif post.media_type == 'video' and post.media_file %}
+            <video controls class="media-thumbnail">
+                <source src="{{ post.media_file.url }}" type="video/mp4" />
+                Your browser does not support the video tag.
+            </video>
+            {% else %}
+            <p>No media uploaded.</p>
+            {% endif %}
+        </div>
+    
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="post_id" value="{{ post.id }}">
+    
+            <div class="form-row">
+                <div class="form-label">
+                    <label for="title">Title</label>
+                </div>
+                <div class="form-input">
+                    <input type="text" class="form-control" name="title" id="title" value="{{ post.title }}" required placeholder="Enter post title">
+                </div>
+            </div>
+    
+            <div class="form-row">
+                <div class="form-label">
+                    <label for="content">Content</label>
+                </div>
+                <div class="form-input">
+                    <textarea class="form-control" name="content" id="content" required placeholder="Write your post content here">{{ post.content }}</textarea>
+                </div>
+            </div>
+    
+            <div class="form-row">
+                <div class="form-label">
+                    <label for="category">Category</label>
+                </div>
+                <div class="form-input">
+                    <select class="form-control" name="category" required>
+                        <option value="">Select Category</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id == post.category.id %}selected{% endif %}>{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+    
+            <div class="form-row">
+                <div class="form-label">
+                    <label>Media Type</label>
+                </div>
+                <div class="form-input">
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="media_type" value="image" id="image" {% if post.media_type == 'image' %}checked{% endif %}>
+                            Image
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="media_type" value="video" id="video" {% if post.media_type == 'video' %}checked{% endif %}>
+                            Video
+                        </label>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="form-row" id="image_input" style="display: {% if post.media_type == 'image' %}block{% else %}none{% endif %};">
+                <div class="form-label">
+                    <label for="image">Upload Image</label>
+                </div>
+                <div class="form-input">
+                    <input type="file" class="form-control" name="image" accept="image/*">
+                </div>
+            </div>
+    
+            <div class="form-row" id="video_input" style="display: {% if post.media_type == 'video' %}block{% else %}none{% endif %};">
+                <div class="form-label">
+                    <label for="video">Upload Video</label>
+                </div>
+                <div class="form-input">
+                    <input type="file" class="form-control" name="video" accept="video/*">
+                </div>
+            </div>
+    
+            <div class="submit-row">
+                <button type="submit" class="btnn">Update Post</button>
+            </div>
+        </form>
+        <div class="gradient-line2"></div>
+    </div>
+
+<script>
+    // Script to handle radio button display for media type selection
+    const imageInput = document.getElementById('image_input');
+    const videoInput = document.getElementById('video_input');
+    const imageRadio = document.getElementById('image');
+    const videoRadio = document.getElementById('video');
+
+    imageRadio.addEventListener('change', function() {
+        if (this.checked) {
+            imageInput.style.display = 'block';
+            videoInput.style.display = 'none';
+        }
+    });
+
+    videoRadio.addEventListener('change', function() {
+        if (this.checked) {
+            videoInput.style.display = 'block';
+            imageInput.style.display = 'none';
+        }
+    });
+</script>
+
+{% endblock %}
+
+
